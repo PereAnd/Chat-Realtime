@@ -1,0 +1,23 @@
+version: "3.8"
+
+services:
+  db_smart_classroom:
+    image: postgres
+    container_name: db_smart_classroom
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: db_smart_classroom
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 2s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "5432:5432"
+    networks:
+      - chat_network
+
+networks:
+  chat_network:
+    driver: bridge
