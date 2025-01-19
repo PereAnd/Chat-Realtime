@@ -20,7 +20,7 @@
   </div>
 
   <div class="input-container">
-    <form>
+    <form [formGroup]="formChat" (ngSubmit)="sendMessage()">
       <div class="input-group input">
         <input
           type="text"
@@ -28,8 +28,9 @@
           placeholder="Type a message"
           aria-label="Recipient's username"
           aria-describedby="button-addon2"
+          formControlName="text"
         />
-        <button class="btn btn-dark" type="button" id="button-addon2">
+        <button class="btn btn-dark" type="submit" id="button-addon2">
           Send
         </button>
       </div>

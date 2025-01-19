@@ -1,16 +1,20 @@
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { SocketService } from '../../services/socket.service';
 import { NgClass, NgFor } from '@angular/common';
 
 @Component({
-  selector: 'app-chat',
-  imports: [NgClass, NgFor],
+  imports: [NgClass, NgFor, ReactiveFormsModule],
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.scss',
 })
 export class ChatComponent implements OnInit, OnDestroy {
   messages: any[] = [];
   names: string[] = ['Andres Perez', 'Alejandra Hurtado'];
+
+  formChat = new FormGroup({
+    text: new FormControl(''),
+  });
 
   constructor(private readonly socketService: SocketService) {}
 
@@ -19,10 +23,21 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   sendMessage() {
-    this.socketService.emitMessage({
-      event: 'toServer',
-      content: { message: 'Hola' },
-    });
+    let textToSend = this.formChat.get('text')?.value;
+    if (textToSend?.trim()) {
+      this.messages.push({
+        sent: true,
+        username: 'Andres Perez',
+        type: 'MODERATOR',
+        timestamp: new Date().toISOString(),
+        content: textToSend,
+      });
+      this.socketService.emitMessage({
+        event: 'toServer',
+        content: { message: textToSend },
+      });
+      this.formChat.reset();
+    }
   }
 
   ngOnDestroy(): void {
