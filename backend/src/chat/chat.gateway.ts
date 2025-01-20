@@ -1,4 +1,5 @@
 import {
+  ConnectedSocket,
   MessageBody,
   OnGatewayConnection,
   OnGatewayDisconnect,
@@ -25,7 +26,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   @SubscribeMessage('toServer')
-  handleMessage(@MessageBody() data: any) {
-    console.log(data);
+  handleMessage(@ConnectedSocket() socket: Socket, @MessageBody() data: any) {
+    socket.broadcast.emit('toUsers', data);
   }
 }

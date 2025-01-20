@@ -69,7 +69,6 @@ export class SocketService {
   listenToEvent<T>(eventName: string): Observable<T> {
     return new Observable<T>((observer) => {
       if (!this.socket) {
-        observer.error('Socket no conectado');
         return;
       }
 

@@ -8,7 +8,10 @@
       <div class="header-msg">
         <div class="sender">
           <p>
-            {{ message.username }} - <strong>{{ message.type }}</strong>
+            {{ message.username
+            }}<strong *ngIf="message.type == 'MODERATOR'">
+              - {{ message.type.substring(0, 3) }}</strong
+            >
           </p>
         </div>
         <div class="timestamp">
