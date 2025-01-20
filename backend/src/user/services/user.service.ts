@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../entity/user';
 import { Repository } from 'typeorm';
+import * as bcrypt from 'bcrypt';
+
 import {
   BusinessError,
   BusinessLogicException,
@@ -30,6 +32,7 @@ export class UserService {
   }
 
   async create(user: User): Promise<User> {
+    user.pwd = await this.hashPwd(user.pwd);
     return await this.userRepository.save(user);
   }
 
@@ -42,6 +45,9 @@ export class UserService {
         'User not found',
         BusinessError.NOT_FOUND,
       );
+    }
+    if (newData.pwd != null) {
+      newData.pwd = await this.hashPwd(newData.pwd);
     }
     Object.assign(userSaved, newData);
     return await this.userRepository.save(userSaved);
@@ -59,5 +65,11 @@ export class UserService {
     }
 
     await this.userRepository.remove(userSaved);
+  }
+
+  async hashPwd(pwd: string): Promise<string> {
+    const saltOrRounds = 10;
+    const hash = await bcrypt.hash(pwd, saltOrRounds);
+    return hash;
   }
 }
