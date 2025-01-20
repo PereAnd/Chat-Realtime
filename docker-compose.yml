@@ -1,13 +1,13 @@
 version: "3.8"
 
 services:
-  db_smart_classroom:
+  db_chat_realtime:
     image: postgres
-    container_name: db_smart_classroom
+    container_name: db_chat_realtime
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: db_smart_classroom
+      POSTGRES_DB: db_chat_realtime
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 2s
