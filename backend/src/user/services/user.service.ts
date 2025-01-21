@@ -31,6 +31,17 @@ export class UserService {
     return user;
   }
 
+  async findByEmail(email: string): Promise<User> {
+    const user: User = await this.userRepository.findOne({ where: { email } });
+    if (!user) {
+      throw new BusinessLogicException(
+        'User not found',
+        BusinessError.NOT_FOUND,
+      );
+    }
+    return user;
+  }
+
   async create(user: User): Promise<User> {
     user.pwd = await this.hashPwd(user.pwd);
     return await this.userRepository.save(user);

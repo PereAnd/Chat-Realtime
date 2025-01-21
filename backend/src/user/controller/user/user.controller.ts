@@ -8,9 +8,11 @@ import {
   Param,
   Patch,
   Post,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { BusinessErrorsInterceptor } from 'src/shared/interceptors/business-errors/business-errors.interceptor';
 import { ReqCreateUserDto } from 'src/user/dto/req-create-user-dto';
 import { ReqUpdateUserDto } from 'src/user/dto/req-update-user-dto';
@@ -24,12 +26,14 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get()
+  @UseGuards(JwtAuthGuard)
   async findAlll() {
     const users: User[] = await this.userService.findAll();
     return users.map((user) => ResUserDto.instanceToDto(user));
   }
 
   @Get(':id')
+  @UseGuards(JwtAuthGuard)
   async findById(@Param('id') id: string) {
     return ResUserDto.instanceToDto(await this.userService.findById(id));
   }
@@ -41,6 +45,7 @@ export class UserController {
   }
 
   @Patch(':id')
+  @UseGuards(JwtAuthGuard)
   async update(@Param('id') id: string, @Body() newData: ReqUpdateUserDto) {
     return ResUserDto.instanceToDto(
       await this.userService.update(id, newData as User),
@@ -48,6 +53,7 @@ export class UserController {
   }
 
   @Delete(':id')
+  @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   async delete(@Param(':id') id: string) {
     return await this.userService.delete(id);
